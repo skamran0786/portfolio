@@ -8,6 +8,7 @@
     const navItems = navLinks ? [...navLinks.querySelectorAll('a[href^="#"]')] : [];
     const navSectionIds = new Set(navItems.map(link => link.hash.slice(1)));
     const themeToggle = document.querySelector('.theme-toggle');
+    const themeColor = document.querySelector('meta[name="theme-color"]');
     const contactForm = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
     const successMessage = document.getElementById('form-success-message');
@@ -18,6 +19,7 @@
     function setTheme(isDark) {
         body.classList.toggle('dark-mode', isDark);
         body.classList.toggle('light-mode', !isDark);
+        themeColor?.setAttribute('content', isDark ? '#121820' : '#ffffff');
         if (!themeToggle) return;
 
         themeToggle.setAttribute('aria-pressed', String(isDark));

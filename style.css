@@ -1894,3 +1894,12 @@ button {
         transform: none;
     }
 }
+
+@media (max-width: 820px), (hover: none), (pointer: coarse) {
+    .footer-column li a,
+    .footer-contact > a {
+        display: inline-flex;
+        min-height: 40px;
+        align-items: center;
+    }
+}
