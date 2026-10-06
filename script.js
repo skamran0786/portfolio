@@ -176,13 +176,34 @@
 
     function initializeFluidBackground() {
         const canvas = document.getElementById('fluid-canvas');
-        if (!canvas || reducedMotion.matches || typeof startFluidAnimation !== 'function') return;
+        if (!canvas || reducedMotion.matches) return;
 
         const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4;
         const lowCoreCount = typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 4;
         if (window.matchMedia('(max-width: 768px)').matches || lowMemory || lowCoreCount) return;
 
-        startFluidAnimation(canvas);
+        const loadFluidBackground = () => {
+            const fluidScript = document.createElement('script');
+            fluidScript.src = 'fluid.js?v=381b3da556a7';
+            fluidScript.async = true;
+            fluidScript.addEventListener('load', () => {
+                if (typeof startFluidAnimation !== 'function') {
+                    console.error('Fluid background script loaded without its animation entry point.');
+                    return;
+                }
+                startFluidAnimation(canvas);
+            }, { once: true });
+            fluidScript.addEventListener('error', () => {
+                console.error('Fluid background script failed to load.');
+            }, { once: true });
+            document.head.append(fluidScript);
+        };
+
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(loadFluidBackground, { timeout: 2000 });
+        } else {
+            window.setTimeout(loadFluidBackground, 1200);
+        }
     }
 
     const year = document.getElementById('current-year');
